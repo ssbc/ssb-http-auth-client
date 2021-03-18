@@ -138,9 +138,3 @@ module.exports = {
     };
   },
 };
-
-// var sc = `8afjDWI1919g5rV1eduWN84aRJ1ZlFh0KU3+BALM0b4=`;
-// var sid = `@FxpLesUhgmNyO44BDD9cEC6WdMBKl+CrVWEAsz++2R4=.ed25519`;
-// var uri = `ssb:experimental?action=start-http-auth&sid=${encodeURIComponent(
-//   sid,
-// )}&sc=${encodeURIComponent(sc)}`;
