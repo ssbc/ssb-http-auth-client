@@ -15,8 +15,6 @@ module.exports = {
     anonymous: {allow: ['signIn', 'signOut'], deny: null},
   },
   init(ssb: SSB, config: Config) {
-    if (!ssb.httpAuthClientTokens.has) throw new Error('incorrectly installed');
-
     return {
       signIn(sc: string, cc: string, crInput: null, cb: CB<string>) {
         if (sc.length < NONCE_LENGTH_BASE64) {
@@ -28,11 +26,11 @@ module.exports = {
           return;
         }
         if (!ssb.httpAuthClientTokens.has(cc)) {
-          cb(new Error('The client nonce "cc" has expired'));
+          cb(new Error('The client nonce "cc" is unknown or has expired'));
           return;
         }
         if (crInput !== null) {
-          cb(new Error('client-side httpAuth.signIn should not receive "cr"'));
+          cb(new Error('Client-side httpAuth.signIn should not receive "cr"'));
           return;
         }
         const cid: FeedId = ssb.id;

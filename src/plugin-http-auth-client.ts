@@ -23,7 +23,6 @@ module.exports = {
     if (!hasConnInstalled(ssb)) {
       throw new Error('ssb-http-auth-client requires the ssb-conn plugin');
     }
-    if (!ssb.httpAuthClientTokens.has) throw new Error('incorrectly installed');
 
     return {
       produceSignInWebUrl(sid: FeedId, cb: CB<string>) {
@@ -126,7 +125,7 @@ module.exports = {
 
           // Sign-in
           rpc.httpAuth.signIn(sc, cc, cr, (err2: any, answer: any) => {
-            if (err) {
+            if (err2) {
               cb(new Error(`httpAuth.signIn at ${sid} failed: ${err2}`));
               return
             }

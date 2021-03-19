@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/node": "12.x",
     "nyc": "^15.1.0",
+    "pull-stream": "^3.6.14",
     "secret-stack": "6.3.2",
     "ssb-caps": "^1.1.0",
     "ssb-conn": "~2.1.0",
@@ -30,7 +31,7 @@
   "scripts": {
     "compile": "tsc",
     "pretest": "npm run compile",
-    "test": "tape test/index.js | tap-spec",
+    "test": "tape test/*-cases.js | tap-spec",
     "coverage": "nyc npm run test"
   },
   "author": "Andre Staltz <contact@staltz.com> (http://staltz.com)",
