@@ -4,8 +4,9 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const SecretStack = require('secret-stack');
+const ssbKeys = require('ssb-keys');
 const caps = require('ssb-caps');
-const {ALICE_KEYS, ROOM_ID, ROOM_MSADDR} = require('./keys');
+const {ALICE_KEYS, ROOM_ID, ROOM_MSADDR, ALICE_ID} = require('./keys');
 const CreateSSB = require('./sbot');
 
 test('error if ssb-conn is missing', (t) => {
@@ -161,7 +162,7 @@ test('error httpAuthClient.consumeSignInSsbUri when server is offline', (t) => {
   });
 });
 
-test('error httpAuthClient.consumeSignInSsbUri if server signIn fails', (t) => {
+test('error httpAuthClient.consumeSignInSsbUri if sendSolution fails', (t) => {
   const sid = ROOM_ID;
   const sc = crypto.randomBytes(32).toString('base64');
 
@@ -177,8 +178,8 @@ test('error httpAuthClient.consumeSignInSsbUri if server signIn fails', (t) => {
       t.equal(addr, ROOM_MSADDR, 'connected to correct server');
       const rpc = {
         httpAuth: {
-          signIn(_sc, _cc, _cr, done) {
-            done(new Error('testing failure to httpAuth.signIn'));
+          sendSolution(_sc, _cc, _sol, done) {
+            done(new Error('testing failure to httpAuth.sendSolution'));
           },
         },
       };
@@ -196,7 +197,7 @@ test('error httpAuthClient.consumeSignInSsbUri if server signIn fails', (t) => {
 
   ssb.httpAuthClient.consumeSignInSsbUri(uri, (err, answer) => {
     t.ok(err, 'has error');
-    t.match(err.message, /testing failure to httpAuth\.signIn/);
+    t.match(err.message, /testing failure to httpAuth\.sendSolution/);
     t.notOk(answer);
     ssb.close(t.end);
   });
@@ -213,7 +214,7 @@ test('error httpAuthClient.consumeSignInSsbUri when URI is missing', (t) => {
   });
 });
 
-test('error httpAuthClient.consumeSignInSsbUri when URI is not experi', (t) => {
+test('error httpAuthClient.consumeSignInSsbUri when URI is not SSB', (t) => {
   const sid = ROOM_ID;
   const sc = crypto.randomBytes(32).toString('base64');
 
@@ -366,80 +367,72 @@ test('error httpAuthClient.consumeSignInSsbUri when URI sc is short', (t) => {
   });
 });
 
-test('error httpAuth.signIn when missing cc', (t) => {
+test('error httpAuth.requestSolution when missing cc', (t) => {
   const ssb = CreateSSB((close) => ({}));
 
-  const cc = crypto.randomBytes(32).toString('base64');
   const sid = ROOM_ID;
+  const cc = crypto.randomBytes(32).toString('base64');
   const sc = crypto.randomBytes(32).toString('base64');
-  ssb.httpAuth.signIn.call({id: sid}, sc, cc, null, (err, cr) => {
+  ssb.httpAuth.requestSolution.call({id: sid}, sc, cc, (err, sol) => {
     t.ok(err, 'has error');
     t.match(err.message, /The client nonce "cc" is unknown or has expired/);
-    t.notOk(cr, 'no cr');
+    t.notOk(sol, 'no sol');
     ssb.close(t.end);
   });
 });
 
-test('error httpAuth.signIn when cc is short', (t) => {
+test('error httpAuth.requestSolution when cc is short', (t) => {
   const ssb = CreateSSB((close) => ({}));
 
-  const cc = crypto.randomBytes(16).toString('base64');
   const sid = ROOM_ID;
+  const cc = crypto.randomBytes(16).toString('base64');
   const sc = crypto.randomBytes(32).toString('base64');
-  ssb.httpAuth.signIn.call({id: sid}, sc, cc, null, (err, cr) => {
+  ssb.httpAuth.requestSolution.call({id: sid}, sc, cc, (err, sol) => {
     t.ok(err, 'has error');
     t.match(err.message, /Client nonce "cc" is not 256 bits/);
-    t.notOk(cr, 'no cr');
+    t.notOk(sol, 'no sol');
     ssb.close(t.end);
   });
 });
 
-test('error httpAuth.signIn when sc is short', (t) => {
+test('error httpAuth.requestSolution when sc is short', (t) => {
   const ssb = CreateSSB((close) => ({}));
 
-  const cc = crypto.randomBytes(32).toString('base64');
   const sid = ROOM_ID;
+  const cc = crypto.randomBytes(32).toString('base64');
   const sc = crypto.randomBytes(16).toString('base64');
-  ssb.httpAuth.signIn.call({id: sid}, sc, cc, null, (err, cr) => {
+  ssb.httpAuth.requestSolution.call({id: sid}, sc, cc, (err, sol) => {
     t.ok(err, 'has error');
     t.match(err.message, /Server nonce "sc" is not 256 bits/);
-    t.notOk(cr, 'no cr');
+    t.notOk(sol, 'no sol');
     ssb.close(t.end);
   });
 });
 
-test('error httpAuth.signIn when cr input is given', (t) => {
-  const ssb = CreateSSB((close) => ({
-    query: () => ({
-      peersConnected() {
-        return [[ROOM_MSADDR, {key: ROOM_ID}]];
-      },
-    }),
-  }));
+test('error httpAuth.sendSolution always', (t) => {
+  const sid = ROOM_ID;
+  const cid = ALICE_ID;
+  const sc = crypto.randomBytes(32).toString('base64');
+  const cc = crypto.randomBytes(32).toString('base64');
+  const body = `=http-auth-sign-in:${sid}:${cid}:${sc}:${cc}`;
+  const sol = ssbKeys.sign(ALICE_KEYS, body);
 
-  ssb.httpAuthClient.produceSignInWebUrl(ROOM_ID, (err, url) => {
-    const cc = new URL(url).searchParams.get('cc');
-    const sid = ROOM_ID;
-    const sc = crypto.randomBytes(32).toString('base64');
-    const crInput = crypto.randomBytes(32).toString('base64');
-    ssb.httpAuth.signIn.call({id: sid}, sc, cc, crInput, (err2, cr) => {
-      t.ok(err2, 'has error');
-      t.match(
-        err2.message,
-        /Client-side httpAuth.signIn should not receive "cr"/,
-      );
-      t.notOk(cr, 'no cr');
-      ssb.close(t.end);
-    });
+  const ssb = CreateSSB((close) => ({}));
+
+  ssb.httpAuth.sendSolution(sc, cc, sol, (err, response) => {
+    t.ok(err, 'has error');
+    t.match(err.message, /httpAuth.sendSolution not supported/);
+    t.notOk(response, 'no response');
+    ssb.close(t.end);
   });
 });
 
-test('error httpAuth.signOut always', (t) => {
+test('error httpAuth.invalidateAllSolutions always', (t) => {
   const ssb = CreateSSB((close) => ({}));
 
-  ssb.httpAuth.signOut((err, response) => {
+  ssb.httpAuth.invalidateAllSolutions((err, response) => {
     t.ok(err, 'has error');
-    t.match(err.message, /httpAuth.signOut not supported on the client side/);
+    t.match(err.message, /httpAuth.invalidateAllSolutions not supported/);
     t.notOk(response, 'no response');
     ssb.close(t.end);
   });

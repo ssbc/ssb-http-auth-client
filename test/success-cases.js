@@ -65,11 +65,11 @@ test('httpAuthClient.consumeSignInSsbUri', (t) => {
       t.equal(addr, ROOM_MSADDR, 'connected to correct server');
       const rpc = {
         httpAuth: {
-          signIn(_sc, _cc, _cr, done) {
+          sendSolution(_sc, _cc, _sol, done) {
             t.equal(_sc, sc, 'sc matches');
             t.equal(Buffer.from(_cc, 'base64').length, 32, 'cc is 256 bits');
-            const body = `=http-auth-sign-in:${cid}:${sid}:${_cc}:${_sc}`;
-            t.true(ssbKeys.verify(ALICE_KEYS, _cr, body), 'cr is correct');
+            const body = `=http-auth-sign-in:${sid}:${cid}:${_sc}:${_cc}`;
+            t.true(ssbKeys.verify(ALICE_KEYS, _sol, body), 'sol is correct');
             done(null, true);
           },
         },
@@ -93,7 +93,7 @@ test('httpAuthClient.consumeSignInSsbUri', (t) => {
   });
 });
 
-test('httpAuth.signIn', (t) => {
+test('httpAuth.requestSolution', (t) => {
   const ssb = CreateSSB((close) => ({
     query: () => ({
       peersConnected() {
@@ -107,10 +107,10 @@ test('httpAuth.signIn', (t) => {
     const cid = ALICE_ID;
     const sid = ROOM_ID;
     const sc = crypto.randomBytes(32).toString('base64');
-    ssb.httpAuth.signIn.call({id: sid}, sc, cc, null, (err2, cr) => {
+    ssb.httpAuth.requestSolution.call({id: sid}, sc, cc, (err2, sol) => {
       t.error(err2, 'no error');
-      const body = `=http-auth-sign-in:${cid}:${sid}:${cc}:${sc}`;
-      t.true(ssbKeys.verify(ALICE_KEYS, cr, body), 'cr is correct');
+      const body = `=http-auth-sign-in:${sid}:${cid}:${sc}:${cc}`;
+      t.true(ssbKeys.verify(ALICE_KEYS, sol, body), 'sol is correct');
       ssb.close(t.end);
     });
   });

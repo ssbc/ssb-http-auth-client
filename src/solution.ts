@@ -3,12 +3,12 @@ const ssbKeys = require('ssb-keys');
 
 export function solve(
   keys: any,
-  cid: FeedId,
   sid: FeedId,
-  cc: string,
+  cid: FeedId,
   sc: string,
+  cc: string,
 ): string {
-  const body = `=http-auth-sign-in:${cid}:${sid}:${cc}:${sc}`;
-  const cr = ssbKeys.sign(keys, body);
-  return cr;
+  const body = `=http-auth-sign-in:${sid}:${cid}:${sc}:${cc}`;
+  const sol = ssbKeys.sign(keys, body);
+  return sol;
 }

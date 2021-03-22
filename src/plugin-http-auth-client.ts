@@ -109,8 +109,8 @@ module.exports = {
         // Solve challenges
         const cc = ssb.httpAuthClientTokens.create();
         const cid: FeedId = ssb.id;
-        const cr = solve(config.keys, cid, sid, cc, sc);
-        debug(`signIn with: cid=${cid}, sid=${sid}, cc=${cc}, sc=${sc}`);
+        const sol = solve(config.keys, sid, cid, sc, cc);
+        debug(`sendSolution where sid=${sid}, cid=${cid}, sc=${sc}, cc=${cc}`);
 
         // Connect to server
         ssb.conn.connect(serverMSAddr, (err, rpc) => {
@@ -124,12 +124,12 @@ module.exports = {
           }
 
           // Sign-in
-          rpc.httpAuth.signIn(sc, cc, cr, (err2: any, answer: any) => {
+          rpc.httpAuth.sendSolution(sc, cc, sol, (err2: any, answer: any) => {
             if (err2) {
-              cb(new Error(`httpAuth.signIn at ${sid} failed: ${err2}`));
+              cb(new Error(`httpAuth.sendSolution at ${sid} failed: ${err2}`));
               return
             }
-            debug(`Server ${sid} answered our httpAuth.sign with ${answer}`)
+            debug(`Server ${sid} answered our httpAuth.sendSolution with ${answer}`)
             cb(null, answer)
           });
         });
