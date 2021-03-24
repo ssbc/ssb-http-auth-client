@@ -15,7 +15,6 @@ module.exports = {
   permissions: {
     anonymous: {
       allow: ['sendSolution', 'requestSolution', 'invalidateAllSolutions'],
-      deny: null,
     },
   },
   init(ssb: SSB, config: Config) {
