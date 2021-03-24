@@ -1,7 +1,7 @@
 {
   "name": "ssb-http-auth-client",
   "description": "Secret-stack plugin to implement Sign-in with SSB over HTTP",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/ssb-ngi-pointer/ssb-http-auth-client",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
