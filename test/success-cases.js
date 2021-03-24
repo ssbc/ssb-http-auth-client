@@ -92,6 +92,50 @@ test('httpAuthClient.consumeSignInSsbUri', (t) => {
   });
 });
 
+test('httpAuthClient.consumeSignInSsbUri alt', (t) => {
+  const cid = ALICE_ID;
+  const sid = ROOM_ID;
+  const sc = crypto.randomBytes(32).toString('base64');
+
+  const ssb = CreateSSB((close) => ({
+    query: () => ({
+      peersAll() {
+        return [[ROOM_MSADDR, {key: ROOM_ID}]];
+      },
+    }),
+
+    connect: (addr, cb) => {
+      t.equal(addr, ROOM_MSADDR, 'connected to correct server');
+      const rpc = {
+        httpAuth: {
+          sendSolution(_sc, _cc, _sol, done) {
+            t.equal(_sc, sc, 'sc matches');
+            t.equal(Buffer.from(_cc, 'base64').length, 32, 'cc is 256 bits');
+            const body = `=http-auth-sign-in:${sid}:${cid}:${_sc}:${_cc}`;
+            t.true(ssbKeys.verify(ALICE_KEYS, _sol, body), 'sol is correct');
+            done(null, true);
+          },
+        },
+      };
+      cb(null, rpc);
+    },
+  }));
+
+  const uri =
+    'ssb://experimental?' +
+    [
+      'action=start-http-auth',
+      'sid=' + encodeURIComponent(sid),
+      'sc=' + encodeURIComponent(sc),
+    ].join('&');
+
+  ssb.httpAuthClient.consumeSignInSsbUri(uri, (err, answer) => {
+    t.error(err, 'no error');
+    t.true(answer, 'sign-in done with true');
+    ssb.close(t.end);
+  });
+});
+
 test('httpAuth.requestSolution', (t) => {
   const ssb = CreateSSB((close) => ({
     query: () => ({

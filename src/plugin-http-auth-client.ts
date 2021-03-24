@@ -73,7 +73,7 @@ module.exports = {
           cb(new Error('Invalid SSB URI provided: ' + uri));
           return;
         }
-        if (u.pathname !== 'experimental') {
+        if (u.pathname !== 'experimental' && u.host !== 'experimental') {
           cb(new Error('Invalid experimental SSB URI provided: ' + uri));
           return;
         }
