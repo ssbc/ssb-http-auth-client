@@ -55,8 +55,7 @@ test('httpAuthClient.consumeSignInSsbUri', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
-        t.equal(pool, 'dbAndStaging');
+      peersAll() {
         return [[ROOM_MSADDR, {key: ROOM_ID}]];
       },
     }),

@@ -85,7 +85,7 @@ test('error httpAuthClient.consumeSignInSsbUri when server is unknown', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
+      peersAll(pool) {
         return [];
       },
     }),
@@ -113,8 +113,7 @@ test('error httpAuthClient.consumeSignInSsbUri when server is offline', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
-        t.equal(pool, 'dbAndStaging');
+      peersAll() {
         return [[ROOM_MSADDR, {key: ROOM_ID}]];
       },
     }),
@@ -146,8 +145,7 @@ test('error httpAuthClient.consumeSignInSsbUri when server is offline', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
-        t.equal(pool, 'dbAndStaging');
+      peersAll() {
         return [[ROOM_MSADDR, {key: ROOM_ID}]];
       },
     }),
@@ -179,8 +177,7 @@ test('error httpAuthClient.consumeSignInSsbUri if sendSolution fails', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
-        t.equal(pool, 'dbAndStaging');
+      peersAll() {
         return [[ROOM_MSADDR, {key: ROOM_ID}]];
       },
     }),
@@ -253,8 +250,7 @@ test('error httpAuthClient.consumeSignInSsbUri when server is offline', (t) => {
 
   const ssb = CreateSSB((close) => ({
     query: () => ({
-      peersConnectable(pool) {
-        t.equal(pool, 'dbAndStaging');
+      peersAll() {
         return [[ROOM_MSADDR, {key: ROOM_ID}]];
       },
     }),
