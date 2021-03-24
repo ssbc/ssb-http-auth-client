@@ -31,7 +31,18 @@ test('error if ssb-conn is missing', (t) => {
       });
   }, 'ssb-http-auth-client requires the ssb-conn plugin');
 
-  t.end()
+  t.end();
+});
+
+test('error httpAuthClient.produceSignInWebUrl when sid is bad', (t) => {
+  const ssb = CreateSSB((close) => ({}));
+
+  ssb.httpAuthClient.produceSignInWebUrl('foobarbaz', (err, url) => {
+    t.ok(err, 'has error');
+    t.match(err.message, /Invalid SSB ID/);
+    t.notOk(url);
+    ssb.close(t.end);
+  });
 });
 
 test('error httpAuthClient.produceSignInWebUrl when server is offline', (t) => {

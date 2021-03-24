@@ -26,6 +26,11 @@ module.exports = {
 
     return {
       produceSignInWebUrl(sid: FeedId, cb: CB<string>) {
+        if (!Ref.isFeed(sid)) {
+          cb(new Error('Invalid SSB ID ' + sid));
+          return;
+        }
+
         // Check if server is online
         const peer = ssb.conn
           .query()
