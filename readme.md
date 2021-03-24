@@ -32,11 +32,11 @@ Require and use the following plugin into your ssb-server or secret-stack setup:
 
 ## Usage
 
-In both of the cases below, calling these muxrpc APIs is equivalent to **authorizing** the sign-in to complete. Other calls happen automatically in the background to complete the sign-in process.
+In both of the cases below, calling these muxrpc APIs is equivalent to **fully authorizing** ⚠️ the sign-in to complete. Other calls happen automatically in the background to complete the sign-in process.
 
-- `httpAuthClient.produceSignInWebUrl(serverId, cb)`
+- `sbot.httpAuthClient.produceSignInWebUrl(serverId, cb)`
    - Call this muxrpc API when you want your application to produce a login URL on the web interface on the server which owns the SSB ID `serverId`. The response is a web URL which you can use to redirect your app to the operating system's default browser.
-- `httpAuthClient.consumeSignInSsbUri(ssbUri, cb)`
+- `sbot.httpAuthClient.consumeSignInSsbUri(ssbUri, cb)`
    - According to the *Sign-in with SSB* spec, it may in some cases produce an SSB URI on the server's web page of the format `ssb:experimental?action=start-http-auth....`. You should call this muxrpc API and provide the `ssbUri` to authorize `ssb-http-auth-client` to complete the sign-in process.
 
 ## License
