@@ -103,7 +103,7 @@ module.exports = {
         // Check if we are familiar with server known by `sid`
         const peer = ssb.conn
           .query()
-          .peersConnectable('dbAndStaging')
+          .peersAll()
           .find(([, data]) => data.key === sid);
         if (!peer) {
           cb(new Error('Cannot sign-in to unknown server ' + sid));
