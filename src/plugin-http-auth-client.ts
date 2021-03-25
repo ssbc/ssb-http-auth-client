@@ -15,6 +15,7 @@ module.exports = {
   manifest: {
     produceWebUrl: 'async',
     consumeSsbUri: 'async',
+    invalidateAllSessions: 'async',
   },
   permissions: {
     anonymous: {},
@@ -54,7 +55,7 @@ module.exports = {
         const cid: FeedId = ssb.id;
         const cc = ssb.httpAuthClientTokens.create();
         const _cid = encodeURIComponent(cid);
-        const _cc = encodeURIComponent(cc)
+        const _cc = encodeURIComponent(cc);
         const url = `https://${host}/login?cid=${_cid}&cc=${_cc}`;
 
         cb(null, url);
@@ -132,10 +133,54 @@ module.exports = {
           rpc.httpAuth.sendSolution(sc, cc, sol, (err2: any, answer: any) => {
             if (err2) {
               cb(new Error(`httpAuth.sendSolution at ${sid} failed: ${err2}`));
-              return
+              return;
             }
-            debug(`Server ${sid} answered our httpAuth.sendSolution with ${answer}`)
-            cb(null, answer)
+            debug(
+              `Server ${sid} answered our httpAuth.sendSolution with ${answer}`,
+            );
+            cb(null, answer);
+          });
+        });
+      },
+
+      invalidateAllSessions(sid: FeedId, cb: CB<string>) {
+        if (!Ref.isFeed(sid)) {
+          cb(new Error('Invalid SSB ID ' + sid));
+          return;
+        }
+
+        // Check if server is online
+        const peer = ssb.conn
+          .query()
+          .peersConnected()
+          .find(([, data]) => data.key === sid);
+        if (!peer) {
+          cb(new Error('Cannot sign-out from disconnected server ' + sid));
+          return;
+        }
+
+        // Sign-out
+        const [addr] = peer;
+        ssb.conn.connect(addr, (err, rpc) => {
+          if (err) {
+            cb(new Error(`Cannot sign-out from server ${sid} because: ${err}`));
+            return;
+          }
+          if (!rpc) {
+            cb(new Error(`Cannot sign-out from ${sid}, it seems offline`));
+            return;
+          }
+
+          rpc.httpAuth.invalidateAllSolutions((err2: any, answer: any) => {
+            if (err2) {
+              cb(new Error(`sign-out at ${sid} failed: ${err2}`));
+              return;
+            }
+            debug(
+              `Server ${sid} answered our ` +
+                `httpAuth.invalidateAllSolutions with ${answer}`,
+            );
+            cb(null, answer);
           });
         });
       },
