@@ -101,16 +101,19 @@ module.exports = {
           return;
         }
 
-        // Check if we are familiar with server known by `sid`
-        const peer = ssb.conn
-          .query()
-          .peersAll()
-          .find(([, data]) => data.key === sid);
-        if (!peer) {
-          cb(new Error('Cannot sign-in to unknown server ' + sid));
-          return;
+        // Discover the server's multiserverAddress
+        let serverMSAddr: string = u.searchParams.get('multiserverAddress')!;
+        if (!serverMSAddr || !Ref.isAddress(serverMSAddr)) {
+          const peer = ssb.conn
+            .query()
+            .peersAll()
+            .find(([, data]) => data.key === sid);
+          if (!peer) {
+            cb(new Error('Cannot sign-in to unknown server ' + sid));
+            return;
+          }
+          [serverMSAddr] = peer;
         }
-        const [serverMSAddr] = peer;
 
         // Solve challenges
         const cc = ssb.httpAuthClientTokens.create();
