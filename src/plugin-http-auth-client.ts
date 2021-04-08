@@ -13,8 +13,8 @@ module.exports = {
   name: 'httpAuthClient',
   version: '1.0.0',
   manifest: {
-    produceWebUrl: 'async',
-    consumeSsbUri: 'async',
+    produceSignInWebUrl: 'async',
+    consumeSignInSsbUri: 'async',
     invalidateAllSessions: 'async',
   },
   permissions: {
@@ -103,7 +103,7 @@ module.exports = {
 
         // Discover the server's multiserverAddress
         let serverMSAddr: string = u.searchParams.get('multiserverAddress')!;
-        if (!serverMSAddr || !Ref.isAddress(serverMSAddr)) {
+        if (!serverMSAddr || !Ref.toAddress(serverMSAddr)) {
           const peer = ssb.conn
             .query()
             .peersAll()
