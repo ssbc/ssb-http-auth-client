@@ -19,7 +19,7 @@ test('httpAuthClient.produceSignInWebUrl', (t) => {
     t.pass(url);
     t.true(
       url.startsWith(
-        `https://something.com/login?cid=${encodeURIComponent(ALICE_ID)}`,
+        `https://something.com/login?ssb-http-auth=1&cid=${encodeURIComponent(ALICE_ID)}`,
       ),
       'most of the url looks ok',
     );

@@ -56,7 +56,7 @@ module.exports = {
         const cc = ssb.httpAuthClientTokens.create();
         const _cid = encodeURIComponent(cid);
         const _cc = encodeURIComponent(cc);
-        const url = `https://${host}/login?cid=${_cid}&cc=${_cc}`;
+        const url = `https://${host}/login?ssb-http-auth=1&cid=${_cid}&cc=${_cc}`;
 
         cb(null, url);
       },
