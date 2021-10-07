@@ -1,6 +1,0 @@
-/src
-node_modules
-pnpm-lock.yaml
-/test
-/tsconfig.json
-/.github

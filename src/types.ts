@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Andre Staltz
+//
+// SPDX-License-Identifier: LGPL-3.0-only
+
 import {FeedId} from 'ssb-typescript';
 import {CONN} from 'ssb-conn/lib/conn';
 

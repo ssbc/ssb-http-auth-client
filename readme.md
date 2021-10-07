@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021 Andre Staltz
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # ssb-http-auth-client
 
 Plugin that implements [Sign-in with SSB](https://ssb-ngi-pointer.github.io/rooms2/#sign-in-with-ssb) (primarily to the web dashboard of SSB servers, such as rooms and others) on the client-side. This is supposed to be installed and used on **apps** that make remote calls to servers, thus *clients*.
