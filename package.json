@@ -5,6 +5,12 @@
   "homepage": "https://github.com/ssb-ngi-pointer/ssb-http-auth-client",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts",
+    "LICENSES/*",
+    "*.license"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/ssb-ngi-pointer/ssb-http-auth-client.git"
@@ -30,8 +36,8 @@
   },
   "scripts": {
     "compile": "tsc",
-    "pretest": "npm run compile",
-    "test": "tape test/*-cases.js | tap-spec",
+    "tape": "tape test/*-cases.js | tap-spec",
+    "test": "npm run compile && npm run tape",
     "coverage": "nyc npm run test"
   },
   "author": "Andre Staltz <contact@staltz.com> (http://staltz.com)",

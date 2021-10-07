@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Andre Staltz
+//
+// SPDX-License-Identifier: LGPL-3.0-only
+
 import crypto = require('crypto');
 import {Config, SSB} from './types';
 import {NONCE_LENGTH_BYTE} from './constants';

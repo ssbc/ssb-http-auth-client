@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Andre Staltz
+//
+// SPDX-License-Identifier: Unlicense
+
 const test = require('tape');
 const crypto = require('crypto');
 const fs = require('fs');

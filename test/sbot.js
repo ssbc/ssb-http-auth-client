@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Andre Staltz
+//
+// SPDX-License-Identifier: Unlicense
+
 const fs = require('fs');
 const os = require('os');
 const path = require('path');

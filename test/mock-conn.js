@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Andre Staltz
+//
+// SPDX-License-Identifier: Unlicense
+
 const pull = require('pull-stream');
 
 module.exports = {
