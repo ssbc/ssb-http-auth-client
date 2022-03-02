@@ -433,6 +433,7 @@ test('error httpAuth.sendSolution always', (t) => {
   ssb.httpAuth.sendSolution(sc, cc, sol, (err, response) => {
     t.ok(err, 'has error');
     t.match(err.message, /httpAuth.sendSolution not supported/);
+    t.notOk(err.stack);
     t.notOk(response, 'no response');
     ssb.close(t.end);
   });
@@ -444,6 +445,7 @@ test('error httpAuth.invalidateAllSolutions always', (t) => {
   ssb.httpAuth.invalidateAllSolutions((err, response) => {
     t.ok(err, 'has error');
     t.match(err.message, /httpAuth.invalidateAllSolutions not supported/);
+    t.notOk(err.stack);
     t.notOk(response, 'no response');
     ssb.close(t.end);
   });
