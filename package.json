@@ -26,13 +26,13 @@
     "@types/node": "12.x",
     "nyc": "^15.1.0",
     "pull-stream": "^3.6.14",
-    "secret-stack": "6.3.2",
+    "secret-stack": "6.4.1",
     "ssb-caps": "^1.1.0",
     "ssb-conn": "~2.1.0",
-    "ssb-conn-query": "~1.1.0",
+    "ssb-conn-query": "~1.2.2",
     "tap-spec": "^5.0.0",
-    "tape": "^5.2.2",
-    "typescript": "4.2.x"
+    "tape": "^5.5.2",
+    "typescript": "4.6.x"
   },
   "scripts": {
     "compile": "tsc",
